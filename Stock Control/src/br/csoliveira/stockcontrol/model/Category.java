@@ -1,6 +1,13 @@
 package br.csoliveira.stockcontrol.model;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     private int mIdCategory;
     private String mCategory;
@@ -19,6 +26,27 @@ public class Category {
 
     public String getCategory() {
         return mCategory;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Category)) {
+            return false;
+        }
+
+        Category category = (Category) obj;
+
+        if (category.getIdCategory() == this.getIdCategory()
+                && category.getCategory().equals(this.getCategory())) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getIdCategory();
     }
 
 }

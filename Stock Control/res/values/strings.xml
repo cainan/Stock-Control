@@ -4,11 +4,17 @@
     <string name="app_name">Stock Control</string>
     <string name="category_label">Category</string>
     <string name="order_by_label">Order by</string>
+    
+    
     <string name="category_name_text">Enter with the category name:</string>
     <string name="category_name_hint">Category name</string>
-
+    <string name="category_options">What do you want to do?</string>
+    
     
     <string name="ok_text">Ok</string>
     <string name="cancel_text">Cancel</string>
     <string name="wait_text">Please wait...</string>
+    <string name="remove_text">Remove</string>
+    <string name="edit_text">Edit</string>
+
 </resources>

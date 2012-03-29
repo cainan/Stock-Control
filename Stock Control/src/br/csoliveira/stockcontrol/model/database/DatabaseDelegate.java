@@ -1,14 +1,18 @@
 package br.csoliveira.stockcontrol.model.database;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import br.csoliveira.stockcontrol.R;
 import br.csoliveira.stockcontrol.model.Category;
 import br.csoliveira.stockcontrol.model.Product;
+import br.csoliveira.stockcontrol.util.Utils;
 
 public class DatabaseDelegate {
 
@@ -76,22 +80,31 @@ public class DatabaseDelegate {
         }
     }
 
+    /**
+     * 
+     * @param activity
+     * @param category
+     */
     public synchronized void insertCategory(Activity activity, Category category) {
         new InsertCategory(activity).execute(category);
     }
 
     /**
-     * Insert a new category
      * 
-     * @param category
+     * @param activity
+     * @param mCategoryAdapter
      */
-    public synchronized void insertCategory(Category category) {
-        // Open Database
-        mDataBase = mDatabaseHelper.getWritableDatabase();
-        mDataBase.insert(TABLE_CATEGORY, null, categoryContentValues(category));
-        // Close database
-        closeDb();
+    public synchronized void listCategory(Activity activity) {
+        new ListCategory(activity).execute();
+    }
 
+    /**
+     * 
+     * @param activity
+     * @param idCategory
+     */
+    public void removeCategory(Activity activity, int idCategory) {
+        new RemoveCategory(activity).execute(idCategory);
     }
 
     /**
@@ -130,7 +143,7 @@ public class DatabaseDelegate {
         return cv;
     }
 
-    private class InsertCategory extends AsyncTask<Category, Void, Void> {
+    private class InsertCategory extends AsyncTask<Category, Void, Boolean> {
 
         private Activity mActivity;
 
@@ -145,35 +158,148 @@ public class DatabaseDelegate {
         }
 
         @Override
-        protected Void doInBackground(Category... params) {
+        protected Boolean doInBackground(Category... params) {
             Category category = params[0];
 
+            boolean sucess = false;
             // Open Database
             mDataBase = mDatabaseHelper.getWritableDatabase();
-            for (int i = 0; i < 200; i++) {
-                mDataBase.insert(TABLE_CATEGORY, null, categoryContentValues(category));
+
+            if (mDataBase.insert(TABLE_CATEGORY, null, categoryContentValues(category)) > 0) {
+                sucess = true;
             }
+
             // Close database
             closeDb();
 
-            return null;
+            return sucess;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
-            hideWaitDialog();
-            super.onPostExecute(result);
+        protected void onPostExecute(Boolean success) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, success);
+            super.onPostExecute(success);
         }
     }
 
-    private void showWaitDialog(Activity mActivity) {
-        mWaitDialog = ProgressDialog.show(mActivity, "", mActivity.getString(R.string.wait_text),
+    private class ListCategory extends AsyncTask<Void, Void, ArrayList<Category>> {
+
+        private Activity mActivity;
+
+        public ListCategory(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<Category> doInBackground(Void... params) {
+
+            ArrayList<Category> categoryArray = new ArrayList<Category>();
+            Category category;
+
+            String[] allColumns = { "_id", "category" };
+
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            Cursor cursor = mDataBase.query(TABLE_CATEGORY, allColumns, null, null, null, null,
+                    null);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    category = new Category();
+                    category.setIdCategory(cursor.getInt(0));
+                    category.setCategory(cursor.getString(1));
+
+                    categoryArray.add(category);
+                    cursor.moveToNext();
+                }
+            }
+
+            closeDb();
+
+            return categoryArray;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Category> categoryArray) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, true, categoryArray);
+            super.onPostExecute(categoryArray);
+        }
+
+    }
+
+    private class RemoveCategory extends AsyncTask<Integer, Void, Boolean> {
+
+        private Activity mActivity;
+
+        public RemoveCategory(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+
+            int id = params[0];
+            boolean success = false;
+            // Open Database
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            if (mDataBase.delete(TABLE_CATEGORY, "_id =" + id, null) > 0) {
+                success = true;
+            }
+
+            // Close database
+            closeDb();
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, success);
+            super.onPostExecute(success);
+        }
+    }
+
+    private void showWaitDialog(Activity activity) {
+        Utils.lockScreenRotation(activity);
+        mWaitDialog = ProgressDialog.show(activity, "", activity.getString(R.string.wait_text),
                 true);
     }
 
-    private void hideWaitDialog() {
+    private void hideWaitDialog(Activity activity) {
         if (mWaitDialog != null) {
             mWaitDialog.dismiss();
+            Utils.unlockScreenRotation(activity);
         }
+    }
+
+    public void notifyActivity(DatabaseInterface listener, boolean success) {
+        if (success) {
+            listener.onSuccess();
+        } else {
+            listener.onError();
+        }
+    }
+
+    public void notifyActivity(DatabaseInterface listener, boolean success,
+            ArrayList<Category> categoryArray) {
+        listener.onSuccess(categoryArray);
     }
 }

@@ -17,7 +17,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/order_by_area"
-        android:layout_below="@id/add_category_btn" />
+        android:layout_below="@id/add_category_btn"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/empty_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/order_by_area"
+        android:layout_below="@id/add_category_btn"
+        android:gravity="center"
+        android:text="@string/category_empty"
+        android:textSize="21sp" />
 
     <RelativeLayout
         android:id="@+id/order_by_area"
@@ -29,8 +40,17 @@
             android:id="@+id/order_by_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="@string/order_by_label" />
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/order_by_spinner"
+            android:paddingRight="15dip"
+            android:text="@string/order_by_label"
+            android:textSize="15dip" />
+
+        <Spinner
+            android:id="@+id/order_by_spinner"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true" />
     </RelativeLayout>
 
 </RelativeLayout>

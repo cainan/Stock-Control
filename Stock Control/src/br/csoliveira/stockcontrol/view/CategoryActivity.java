@@ -15,29 +15,42 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import br.csoliveira.stockcontrol.R;
 import br.csoliveira.stockcontrol.adapter.CategoryListAdapter;
 import br.csoliveira.stockcontrol.model.Category;
 import br.csoliveira.stockcontrol.model.database.DatabaseDelegate;
 import br.csoliveira.stockcontrol.model.database.DatabaseInterface;
 import br.csoliveira.stockcontrol.util.Constants;
-import br.csoliveira.stockcontrol.util.Utils;
 
 public class CategoryActivity extends Activity implements DatabaseInterface {
 
+    /** Dialog id's */
     private static final int DIALOG_ADD_CATEGORY = 10;
     private static final int DIALOG_OPTIONS_CATEGORY = 11;
+    private static final int DIALOG_EDIT_CATEGORY = 12;
 
+    /** Hold the add category button */
     private Button mAddBtn;
 
+    /** Database delegate reference */
     private DatabaseDelegate mDatabaseDelegate;
 
+    /** Hold category list adapter */
     private CategoryListAdapter mCategoryAdapter;
 
+    /** Hold the category list */
     private ListView mCategoryList;
 
+    /** Hold the empty message */
+    private TextView mEmptyText;
+
+    /** Hold the last selected category item */
     private Category mSelectedCategory;
 
+    /**
+     * First method called when activity starts
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +62,13 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
         initView();
 
         listCategory();
+
+        updateView();
     }
 
+    /**
+     * Initialize the view
+     */
     private void initView() {
         mAddBtn = (Button) findViewById(R.id.add_category_btn);
         if (mAddBtn != null) {
@@ -78,8 +96,31 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
             });
         }
+
+        mEmptyText = (TextView) findViewById(R.id.empty_list);
     }
 
+    /**
+     * Update the view
+     */
+    private void updateView() {
+        boolean isCategoryEmpty = true;
+        if (mCategoryAdapter.getCount() > 0) {
+            isCategoryEmpty = false;
+        }
+
+        if (isCategoryEmpty) {
+            mCategoryList.setVisibility(View.GONE);
+            mEmptyText.setVisibility(View.VISIBLE);
+        } else {
+            mCategoryList.setVisibility(View.VISIBLE);
+            mEmptyText.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * Restore important infos when the activity is re-creating
+     */
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         mSelectedCategory = (Category) savedInstanceState
@@ -87,12 +128,18 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    /**
+     * Save important infos when the activity is finishing
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(Constants.EXTRA_SELECTED_CATEGORY, mSelectedCategory);
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Create dialogs
+     */
     @Override
     protected Dialog onCreateDialog(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -110,7 +157,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dismissDialog(DIALOG_ADD_CATEGORY);
                     if (editText != null) {
-                        saveCategory(editText.getText().toString());
+                        insertCategory(editText.getText().toString());
                         editText.setText("");
                     }
                 }
@@ -134,8 +181,8 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    // TODO Auto-generated method stub
-
+                    dismissDialog(DIALOG_OPTIONS_CATEGORY);
+                    showDialog(DIALOG_EDIT_CATEGORY);
                 }
             });
 
@@ -149,40 +196,105 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
             });
             Dialog dialog = builder.create();
             return dialog;
+        } else if (id == DIALOG_EDIT_CATEGORY) {
+            builder.setMessage(getString(R.string.category_name_text));
+
+            LayoutInflater factory = LayoutInflater.from(this);
+            final View textField = factory.inflate(R.layout.add_category_layout, null);
+            final EditText editText = (EditText) textField.findViewById(R.id.category_name_field);
+            if (editText != null) {
+                editText.setText(mSelectedCategory.getCategory());
+            }
+            builder.setView(textField);
+
+            builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dismissDialog(DIALOG_ADD_CATEGORY);
+                    if (editText != null) {
+                        editCategory(editText.getText().toString());
+                        editText.setText("");
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.cancel_text, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dismissDialog(DIALOG_ADD_CATEGORY);
+                    if (editText != null) {
+                        editText.setText("");
+                    }
+                }
+            });
+
+            Dialog dialog = builder.create();
+            return dialog;
+
         }
 
         return null;
     }
 
+    /**
+     * Call database to remove a category
+     */
     private void removeCategory() {
         mDatabaseDelegate.removeCategory(this, mSelectedCategory.getIdCategory());
     }
 
-    private void saveCategory(String name) {
+    /**
+     * Call database to inert a new category
+     * 
+     * @param categoryName
+     */
+    private void insertCategory(String categoryName) {
         Category category = new Category();
-        category.setCategory(name);
+        category.setCategory(categoryName);
         mDatabaseDelegate.insertCategory(this, category);
     }
 
+    /**
+     * Call database to edit a category
+     * 
+     * @param categoryName
+     */
+    private void editCategory(String categoryName) {
+        Category category = new Category();
+        category.setCategory(categoryName);
+        category.setIdCategory(mSelectedCategory.getIdCategory());
+        mDatabaseDelegate.editCategory(this, category);
+    }
+
+    /**
+     * Call database to list categories
+     */
     private void listCategory() {
         mDatabaseDelegate.listCategory(this);
     }
 
+    /**
+     * OnSucess callback
+     */
     @Override
     public void onSuccess() {
         listCategory();
     }
 
+    /**
+     * OnSucess callback
+     */
     @SuppressWarnings("unchecked")
     @Override
     public void onSuccess(Object obj) {
         if (obj instanceof ArrayList<?>) {
             ArrayList<Category> categoryArray = (ArrayList<Category>) obj;
             mCategoryAdapter.updateCategory(categoryArray);
+            updateView();
         }
 
     }
 
+    /**
+     * OnError callback
+     */
     @Override
     public void onError() {
         // TODO error code

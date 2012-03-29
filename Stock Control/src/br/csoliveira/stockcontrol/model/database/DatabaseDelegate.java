@@ -81,6 +81,7 @@ public class DatabaseDelegate {
     }
 
     /**
+     * Call the asyncTask to insert a new category
      * 
      * @param activity
      * @param category
@@ -90,6 +91,7 @@ public class DatabaseDelegate {
     }
 
     /**
+     * Call the asyncTask to list categories
      * 
      * @param activity
      * @param mCategoryAdapter
@@ -99,12 +101,23 @@ public class DatabaseDelegate {
     }
 
     /**
+     * Call asyncTask to remove a category
      * 
      * @param activity
      * @param idCategory
      */
     public void removeCategory(Activity activity, int idCategory) {
         new RemoveCategory(activity).execute(idCategory);
+    }
+
+    /**
+     * Call asyncTask to edit a category
+     * 
+     * @param activity
+     * @param category
+     */
+    public void editCategory(Activity activity, Category category) {
+        new EditCategory(activity).execute(category);
     }
 
     /**
@@ -143,6 +156,13 @@ public class DatabaseDelegate {
         return cv;
     }
 
+    /**
+     * Insert a new category into a database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
     private class InsertCategory extends AsyncTask<Category, Void, Boolean> {
 
         private Activity mActivity;
@@ -183,6 +203,62 @@ public class DatabaseDelegate {
         }
     }
 
+    /**
+     * Edit a category in database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
+    private class EditCategory extends AsyncTask<Category, Void, Boolean> {
+
+        private Activity mActivity;
+
+        public EditCategory(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Category... params) {
+            Category category = params[0];
+            boolean sucess = false;
+            int id = category.getIdCategory();
+            ContentValues cv = categoryContentValues(category);
+
+            // Open Database
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            if (mDataBase.update(TABLE_CATEGORY, cv, "_id =" + id, null) > 0) {
+                sucess = true;
+            }
+
+            // Close database
+            closeDb();
+
+            return sucess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, success);
+            super.onPostExecute(success);
+        }
+    }
+
+    /**
+     * List the categories in the database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
     private class ListCategory extends AsyncTask<Void, Void, ArrayList<Category>> {
 
         private Activity mActivity;
@@ -237,6 +313,13 @@ public class DatabaseDelegate {
 
     }
 
+    /**
+     * Remove a category from database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
     private class RemoveCategory extends AsyncTask<Integer, Void, Boolean> {
 
         private Activity mActivity;
@@ -277,12 +360,22 @@ public class DatabaseDelegate {
         }
     }
 
+    /**
+     * Show a progress dialog to the user
+     * 
+     * @param activity
+     */
     private void showWaitDialog(Activity activity) {
         Utils.lockScreenRotation(activity);
         mWaitDialog = ProgressDialog.show(activity, "", activity.getString(R.string.wait_text),
                 true);
     }
 
+    /**
+     * Hide the progress dialog
+     * 
+     * @param activity
+     */
     private void hideWaitDialog(Activity activity) {
         if (mWaitDialog != null) {
             mWaitDialog.dismiss();
@@ -290,7 +383,13 @@ public class DatabaseDelegate {
         }
     }
 
-    public void notifyActivity(DatabaseInterface listener, boolean success) {
+    /**
+     * Notify the activity that the database actions has finished
+     * 
+     * @param listener
+     * @param success
+     */
+    private void notifyActivity(DatabaseInterface listener, boolean success) {
         if (success) {
             listener.onSuccess();
         } else {
@@ -298,7 +397,14 @@ public class DatabaseDelegate {
         }
     }
 
-    public void notifyActivity(DatabaseInterface listener, boolean success,
+    /**
+     * Notify the activity that the database actions has finished
+     * 
+     * @param listener
+     * @param success
+     * @param categoryArray
+     */
+    private void notifyActivity(DatabaseInterface listener, boolean success,
             ArrayList<Category> categoryArray) {
         listener.onSuccess(categoryArray);
     }

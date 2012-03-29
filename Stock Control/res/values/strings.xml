@@ -3,12 +3,13 @@
 
     <string name="app_name">Stock Control</string>
     <string name="category_label">Category</string>
-    <string name="order_by_label">Order by</string>
+    <string name="order_by_label">Order by:</string>
     
     
     <string name="category_name_text">Enter with the category name:</string>
     <string name="category_name_hint">Category name</string>
     <string name="category_options">What do you want to do?</string>
+    <string name="category_empty">No categories found.</string>
     
     
     <string name="ok_text">Ok</string>

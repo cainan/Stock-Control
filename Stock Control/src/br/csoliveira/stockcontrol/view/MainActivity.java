@@ -21,6 +21,9 @@ public class MainActivity extends Activity {
         initview();
     }
 
+    /**
+     * Initialize the view
+     */
     private void initview() {
         mCategoryBtn = (Button) findViewById(R.id.category_btn);
         if (mCategoryBtn != null) {

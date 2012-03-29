@@ -209,7 +209,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
             builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dismissDialog(DIALOG_ADD_CATEGORY);
+                    dismissDialog(DIALOG_EDIT_CATEGORY);
                     if (editText != null) {
                         editCategory(editText.getText().toString());
                         editText.setText("");
@@ -218,7 +218,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
             });
             builder.setNegativeButton(R.string.cancel_text, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dismissDialog(DIALOG_ADD_CATEGORY);
+                    dismissDialog(DIALOG_EDIT_CATEGORY);
                     if (editText != null) {
                         editText.setText("");
                     }

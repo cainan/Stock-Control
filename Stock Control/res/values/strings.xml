@@ -9,6 +9,7 @@
     <string name="category_name_text">Enter with the category name:</string>
     <string name="category_name_hint">Category name</string>
     <string name="category_options">What do you want to do?</string>
+    <string name="category_name_invalid">Invalid category name</string>
     <string name="category_empty">No categories found.</string>
     
     
@@ -17,5 +18,6 @@
     <string name="wait_text">Please wait...</string>
     <string name="remove_text">Remove</string>
     <string name="edit_text">Edit</string>
+    <string name="error_text">Error. Please try again</string>
 
 </resources>

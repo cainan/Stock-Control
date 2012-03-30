@@ -29,6 +29,8 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
     private static final int DIALOG_ADD_CATEGORY = 10;
     private static final int DIALOG_OPTIONS_CATEGORY = 11;
     private static final int DIALOG_EDIT_CATEGORY = 12;
+    private static final int DIALOG_EMPTY_CATEGORY = 13;
+    private static final int DIALOG_ERROR_CATEGORY = 14;
 
     /** Hold the add category button */
     private Button mAddBtn;
@@ -155,19 +157,21 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
             builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dismissDialog(DIALOG_ADD_CATEGORY);
+
                     if (editText != null) {
-                        insertCategory(editText.getText().toString());
-                        editText.setText("");
+                        String text = editText.getText().toString();
+                        if (text.trim().length() > 0) {
+                            removeDialog(DIALOG_ADD_CATEGORY);
+                            insertCategory(editText.getText().toString());
+                        } else {
+                            showDialog(DIALOG_EMPTY_CATEGORY);
+                        }
                     }
                 }
             });
             builder.setNegativeButton(R.string.cancel_text, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dismissDialog(DIALOG_ADD_CATEGORY);
-                    if (editText != null) {
-                        editText.setText("");
-                    }
+                    removeDialog(DIALOG_ADD_CATEGORY);
                 }
             });
 
@@ -181,7 +185,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    dismissDialog(DIALOG_OPTIONS_CATEGORY);
+                    removeDialog(DIALOG_OPTIONS_CATEGORY);
                     showDialog(DIALOG_EDIT_CATEGORY);
                 }
             });
@@ -190,7 +194,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    dismissDialog(DIALOG_OPTIONS_CATEGORY);
+                    removeDialog(DIALOG_OPTIONS_CATEGORY);
                     removeCategory();
                 }
             });
@@ -209,25 +213,53 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
             builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dismissDialog(DIALOG_EDIT_CATEGORY);
+
                     if (editText != null) {
-                        editCategory(editText.getText().toString());
-                        editText.setText("");
+                        String text = editText.getText().toString();
+                        if (text.trim().length() > 0) {
+                            removeDialog(DIALOG_EDIT_CATEGORY);
+                            editCategory(editText.getText().toString());
+                        } else {
+                            showDialog(DIALOG_EMPTY_CATEGORY);
+                        }
                     }
                 }
             });
             builder.setNegativeButton(R.string.cancel_text, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dismissDialog(DIALOG_EDIT_CATEGORY);
-                    if (editText != null) {
-                        editText.setText("");
-                    }
+                    removeDialog(DIALOG_EDIT_CATEGORY);
                 }
             });
 
             Dialog dialog = builder.create();
             return dialog;
 
+        } else if (id == DIALOG_EMPTY_CATEGORY) {
+            builder.setMessage(getString(R.string.category_name_invalid));
+
+            builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeDialog(DIALOG_EMPTY_CATEGORY);
+                }
+            });
+
+            Dialog dialog = builder.create();
+            return dialog;
+        } else if (id == DIALOG_ERROR_CATEGORY) {
+            builder.setMessage(getString(R.string.error_text));
+
+            builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeDialog(DIALOG_ERROR_CATEGORY);
+                }
+            });
+
+            Dialog dialog = builder.create();
+            return dialog;
         }
 
         return null;
@@ -297,7 +329,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
      */
     @Override
     public void onError() {
-        // TODO error code
+        showDialog(DIALOG_ERROR_CATEGORY);
     }
 
 }

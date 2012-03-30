@@ -32,16 +32,18 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f040000;
-        public static final int cancel_text=0x7f040008;
-        public static final int category_empty=0x7f040006;
+        public static final int cancel_text=0x7f040009;
+        public static final int category_empty=0x7f040007;
         public static final int category_label=0x7f040001;
         public static final int category_name_hint=0x7f040004;
+        public static final int category_name_invalid=0x7f040006;
         public static final int category_name_text=0x7f040003;
         public static final int category_options=0x7f040005;
-        public static final int edit_text=0x7f04000b;
-        public static final int ok_text=0x7f040007;
+        public static final int edit_text=0x7f04000c;
+        public static final int error_text=0x7f04000d;
+        public static final int ok_text=0x7f040008;
         public static final int order_by_label=0x7f040002;
-        public static final int remove_text=0x7f04000a;
-        public static final int wait_text=0x7f040009;
+        public static final int remove_text=0x7f04000b;
+        public static final int wait_text=0x7f04000a;
     }
 }

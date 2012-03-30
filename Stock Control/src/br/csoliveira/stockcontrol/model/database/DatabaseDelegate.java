@@ -96,8 +96,41 @@ public class DatabaseDelegate {
      * @param activity
      * @param mCategoryAdapter
      */
-    public synchronized void listCategory(Activity activity) {
-        new ListCategory(activity).execute();
+    public synchronized void listCategory(Activity activity, String orderBy) {
+        String sqlOrderBy = generateOrderByCategory(activity, orderBy);
+        new ListCategory(activity).execute(sqlOrderBy);
+    }
+
+    private String generateOrderByCategory(Activity activity, String orderBy) {
+        String[] array = activity.getResources().getStringArray(R.array.category_order_by_item);
+        int selected = -1;
+        for (int i = 0; i < array.length; i++) {
+            if (orderBy.equals(array[i])) {
+                selected = i;
+            }
+        }
+
+        String sqlSentece;
+
+        switch (selected) {
+        case 0:
+            sqlSentece = "category " + "ASC";
+            break;
+        case 1:
+            sqlSentece = "category " + "DESC";
+            break;
+        case 2:
+            sqlSentece = "_id " + "ASC";
+            break;
+        case 3:
+            sqlSentece = "_id " + "DESC";
+            break;
+        default:
+            sqlSentece = null;
+            break;
+        }
+
+        return sqlSentece;
     }
 
     /**
@@ -259,7 +292,7 @@ public class DatabaseDelegate {
      * @version 1.0
      * @created 29/03/2012
      */
-    private class ListCategory extends AsyncTask<Void, Void, ArrayList<Category>> {
+    private class ListCategory extends AsyncTask<String, Void, ArrayList<Category>> {
 
         private Activity mActivity;
 
@@ -274,8 +307,8 @@ public class DatabaseDelegate {
         }
 
         @Override
-        protected ArrayList<Category> doInBackground(Void... params) {
-
+        protected ArrayList<Category> doInBackground(String... params) {
+            String orderBy = params[0];
             ArrayList<Category> categoryArray = new ArrayList<Category>();
             Category category;
 
@@ -284,7 +317,7 @@ public class DatabaseDelegate {
             mDataBase = mDatabaseHelper.getWritableDatabase();
 
             Cursor cursor = mDataBase.query(TABLE_CATEGORY, allColumns, null, null, null, null,
-                    null);
+                    orderBy);
 
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();

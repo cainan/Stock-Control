@@ -12,9 +12,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import br.csoliveira.stockcontrol.R;
 import br.csoliveira.stockcontrol.adapter.CategoryListAdapter;
@@ -22,6 +24,7 @@ import br.csoliveira.stockcontrol.model.Category;
 import br.csoliveira.stockcontrol.model.database.DatabaseDelegate;
 import br.csoliveira.stockcontrol.model.database.DatabaseInterface;
 import br.csoliveira.stockcontrol.util.Constants;
+import br.csoliveira.stockcontrol.util.Utils;
 
 public class CategoryActivity extends Activity implements DatabaseInterface {
 
@@ -50,6 +53,12 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
     /** Hold the last selected category item */
     private Category mSelectedCategory;
 
+    /** Hold the order by spinner */
+    private Spinner mSpinner;
+
+    /** Hold the order by Name */
+    private String mOrderBy;
+
     /**
      * First method called when activity starts
      */
@@ -63,7 +72,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
         initView();
 
-        listCategory();
+//        listCategory();
 
         updateView();
     }
@@ -94,6 +103,25 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
                     if (mSelectedCategory != null) {
                         showDialog(DIALOG_OPTIONS_CATEGORY);
                     }
+                }
+
+            });
+        }
+
+        mSpinner = (Spinner) findViewById(R.id.order_by_spinner);
+        if (mSpinner != null) {
+            mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+                @Override
+                public void onItemSelected(AdapterView<?> arg0, View view, int position, long id) {
+                    Utils.doLog("selected: " + mSpinner.getItemAtPosition(position).toString());
+                    mOrderBy = mSpinner.getItemAtPosition(position).toString();
+                    listCategory(mOrderBy);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> arg0) {
+                    // Do nothing
                 }
 
             });
@@ -298,8 +326,8 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
     /**
      * Call database to list categories
      */
-    private void listCategory() {
-        mDatabaseDelegate.listCategory(this);
+    private void listCategory(String orderBy) {
+        mDatabaseDelegate.listCategory(this, orderBy);
     }
 
     /**
@@ -307,7 +335,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
      */
     @Override
     public void onSuccess() {
-        listCategory();
+        listCategory(mOrderBy);
     }
 
     /**

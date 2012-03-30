@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="category_order_by_item">
+        <item>A - Z</item>
+        <item>Z - A</item>
+        <item>Older first</item>
+        <item>Newer first</item>
+    </string-array>
+
+</resources>

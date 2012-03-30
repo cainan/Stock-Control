@@ -50,7 +50,9 @@
             android:id="@+id/order_by_spinner"
             android:layout_width="200dip"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:prompt="@string/order_by_label"
+            android:entries="@array/category_order_by_item" />
     </RelativeLayout>
 
 </RelativeLayout>

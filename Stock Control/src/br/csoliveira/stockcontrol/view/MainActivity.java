@@ -12,6 +12,7 @@ public class MainActivity extends Activity {
     /** Called when the activity is first created. */
 
     private Button mCategoryBtn;
+    private Button mProductBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,18 @@ public class MainActivity extends Activity {
                     startActivity(new Intent(MainActivity.this, CategoryActivity.class));
                 }
 
+            });
+        }
+
+        mProductBtn = (Button) findViewById(R.id.product_btn);
+        if (mProductBtn != null) {
+            mProductBtn.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, ProductActivity.class));
+
+                }
             });
         }
     }

@@ -24,7 +24,6 @@ import br.csoliveira.stockcontrol.model.Category;
 import br.csoliveira.stockcontrol.model.database.DatabaseDelegate;
 import br.csoliveira.stockcontrol.model.database.DatabaseInterface;
 import br.csoliveira.stockcontrol.util.Constants;
-import br.csoliveira.stockcontrol.util.Utils;
 
 public class CategoryActivity extends Activity implements DatabaseInterface {
 
@@ -72,7 +71,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
         initView();
 
-//        listCategory();
+        // listCategory();
 
         updateView();
     }
@@ -114,7 +113,6 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
 
                 @Override
                 public void onItemSelected(AdapterView<?> arg0, View view, int position, long id) {
-                    Utils.doLog("selected: " + mSpinner.getItemAtPosition(position).toString());
                     mOrderBy = mSpinner.getItemAtPosition(position).toString();
                     listCategory(mOrderBy);
                 }

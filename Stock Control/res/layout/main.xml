@@ -10,4 +10,10 @@
         android:layout_height="wrap_content"
         android:text="@string/category_label" />
 
+    <Button
+        android:id="@+id/product_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/product_label" />
+
 </LinearLayout>

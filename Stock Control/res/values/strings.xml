@@ -2,22 +2,34 @@
 <resources>
 
     <string name="app_name">Stock Control</string>
-    <string name="category_label">Category</string>
     <string name="order_by_label">Order by:</string>
     
-    
+    <string name="category_label">Category</string>
     <string name="category_name_text">Enter with the category name:</string>
     <string name="category_name_hint">Category name</string>
     <string name="category_options">What do you want to do?</string>
     <string name="category_name_invalid">Invalid category name</string>
     <string name="category_empty">No categories found</string>
     
-    
+    <string name="product_label">Product</string>
+    <string name="product_empty">No products found</string>
+    <string name="product_name_text">Product name:</string>
+    <string name="product_price_text">Unit price:</string>
+    <string name="product_quantity_text">Quantity:</string>
+    <string name="product_category_text">Category:</string>
+    <string name="product_select_category">Select a category:</string>
+    <string name="product_name_hint">Insert a name to the product</string>
+    <string name="product_price_hint">Product unit price</string>
+    <string name="product_quantity_hint">Product quantity</string>
+        
     <string name="ok_text">Ok</string>
+    <string name="save_text">Save</string>
     <string name="cancel_text">Cancel</string>
     <string name="wait_text">Please wait...</string>
     <string name="remove_text">Remove</string>
     <string name="edit_text">Edit</string>
+    <string name="success_text">Operation finished with success.</string>
     <string name="error_text">Error. Please try again</string>
+    <string name="empty_field_text">Please, fill all the fields</string>
 
 </resources>

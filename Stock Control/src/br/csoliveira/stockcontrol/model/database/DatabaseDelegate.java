@@ -91,22 +91,53 @@ public class DatabaseDelegate {
     }
 
     /**
+     * Call asyncTask to remove a category
+     * 
+     * @param activity
+     * @param idCategory
+     */
+    public void removeCategory(Activity activity, int idCategory) {
+        new RemoveCategory(activity).execute(idCategory);
+    }
+
+    /**
+     * Call asyncTask to edit a category
+     * 
+     * @param activity
+     * @param category
+     */
+    public void editCategory(Activity activity, Category category) {
+        new EditCategory(activity).execute(category);
+    }
+
+    /**
      * Call the asyncTask to list categories
      * 
      * @param activity
-     * @param mCategoryAdapter
+     * @param orderBy
      */
     public synchronized void listCategory(Activity activity, String orderBy) {
         String sqlOrderBy = generateOrderByCategory(activity, orderBy);
         new ListCategory(activity).execute(sqlOrderBy);
     }
 
+    /**
+     * Create a string used in orderBy parameter of a query in database
+     * 
+     * @param activity
+     * @param orderBy
+     * @return
+     */
     private String generateOrderByCategory(Activity activity, String orderBy) {
-        String[] array = activity.getResources().getStringArray(R.array.category_order_by_item);
+
         int selected = -1;
-        for (int i = 0; i < array.length; i++) {
-            if (orderBy.equals(array[i])) {
-                selected = i;
+
+        if (orderBy != null) {
+            String[] array = activity.getResources().getStringArray(R.array.order_by_array);
+            for (int i = 0; i < array.length; i++) {
+                if (orderBy.equals(array[i])) {
+                    selected = i;
+                }
             }
         }
 
@@ -134,23 +165,44 @@ public class DatabaseDelegate {
     }
 
     /**
-     * Call asyncTask to remove a category
-     * 
-     * @param activity
-     * @param idCategory
-     */
-    public void removeCategory(Activity activity, int idCategory) {
-        new RemoveCategory(activity).execute(idCategory);
-    }
-
-    /**
-     * Call asyncTask to edit a category
+     * Call the asyncTask to insert a new product
      * 
      * @param activity
      * @param category
      */
-    public void editCategory(Activity activity, Category category) {
-        new EditCategory(activity).execute(category);
+    public synchronized void insertProduct(Activity activity, Product product) {
+        new InsertProduct(activity).execute(product);
+    }
+
+    /**
+     * Call asyncTask to remove a product
+     * 
+     * @param activity
+     * @param idCategory
+     */
+    public void removeProduct(Activity activity, int idCategory) {
+        // new RemoveCategory(activity).execute(idCategory);
+    }
+
+    /**
+     * Call asyncTask to edit a product
+     * 
+     * @param activity
+     * @param category
+     */
+    public void editProduct(Activity activity, Product category) {
+        // new EditCategory(activity).execute(category);
+    }
+
+    /**
+     * Call the asyncTask to list products
+     * 
+     * @param activity
+     * @param orderBy
+     */
+    public synchronized void listProduct(Activity activity, String orderBy) {
+        // String sqlOrderBy = generateOrderByCategory(activity, orderBy);
+        // new ListCategory(activity).execute(sqlOrderBy);
     }
 
     /**
@@ -168,7 +220,7 @@ public class DatabaseDelegate {
      * @param product
      * @return contentValues
      */
-    private ContentValues ProductContentValues(Product product) {
+    private ContentValues productContentValues(Product product) {
         ContentValues cv = new ContentValues();
         cv.put("product", product.getProductName());
         cv.put("idCategoria", product.getCategory().getIdCategory());
@@ -394,6 +446,166 @@ public class DatabaseDelegate {
     }
 
     /**
+     * Insert a new product into a database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
+    private class InsertProduct extends AsyncTask<Product, Void, Boolean> {
+
+        private Activity mActivity;
+
+        public InsertProduct(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Product... params) {
+            Product product = params[0];
+
+            boolean sucess = false;
+            // Open Database
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            if (mDataBase.insert(TABLE_PRODUCT, null, productContentValues(product)) > 0) {
+                sucess = true;
+            }
+
+            // Close database
+            closeDb();
+
+            return sucess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, success);
+            super.onPostExecute(success);
+        }
+    }
+
+    /**
+     * Edit a product in database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
+    private class EditProduct extends AsyncTask<Product, Void, Boolean> {
+
+        private Activity mActivity;
+
+        public EditProduct(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Product... params) {
+            Product product = params[0];
+            boolean sucess = false;
+            int id = product.getIdProduct();
+            ContentValues cv = productContentValues(product);
+
+            // Open Database
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            if (mDataBase.update(TABLE_PRODUCT, cv, "_id =" + id, null) > 0) {
+                sucess = true;
+            }
+
+            // Close database
+            closeDb();
+
+            return sucess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, success);
+            super.onPostExecute(success);
+        }
+    }
+
+    /**
+     * List the products in the database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
+    private class ListProducts extends AsyncTask<String, Void, ArrayList<Product>> {
+
+        private Activity mActivity;
+
+        public ListProducts(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected ArrayList<Product> doInBackground(String... params) {
+            String orderBy = params[0];
+            ArrayList<Product> categoryArray = new ArrayList<Product>();
+            Product product;
+
+            String[] allColumns = { "_id", "idCategoria", "product", "price", "quantity" };
+
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            Cursor cursor = mDataBase.query(TABLE_PRODUCT, allColumns, null, null, null, null,
+                    orderBy);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    product = new Product();
+                    product.setIdProduct(cursor.getInt(0));
+                    product.getCategory().setIdCategory(cursor.getInt(1));
+                    product.setProductName(cursor.getString(2));
+                    product.setPrice(cursor.getString(3));
+                    product.setQuantity(cursor.getInt(4));
+
+                    categoryArray.add(product);
+                    cursor.moveToNext();
+                }
+            }
+
+            closeDb();
+
+            return categoryArray;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Product> categoryArray) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, true, categoryArray);
+            super.onPostExecute(categoryArray);
+        }
+
+    }
+
+    /**
      * Show a progress dialog to the user
      * 
      * @param activity
@@ -437,8 +649,7 @@ public class DatabaseDelegate {
      * @param success
      * @param categoryArray
      */
-    private void notifyActivity(DatabaseInterface listener, boolean success,
-            ArrayList<Category> categoryArray) {
-        listener.onSuccess(categoryArray);
+    private void notifyActivity(DatabaseInterface listener, boolean success, ArrayList<?> array) {
+        listener.onSuccess(array);
     }
 }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dip"
+        android:orientation="vertical"
+        android:paddingBottom="10dip" >
+
+        <TextView
+            android:id="@+id/product_name_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="5dip"
+            android:paddingTop="10dip"
+            android:text="@string/product_name_text" />
+
+        <EditText
+            android:id="@+id/product_name_field"
+            android:layout_width="260dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/product_name_text"
+            android:hint="@string/product_name_hint"
+            android:maxLength="30"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/product_price_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/product_name_field"
+            android:paddingBottom="5dip"
+            android:paddingTop="10dip"
+            android:text="@string/product_price_text" />
+
+        <EditText
+            android:id="@+id/product_price_field"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/product_price_text"
+            android:hint="@string/product_price_hint"
+            android:inputType="numberDecimal"
+            android:maxLength="15"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/product_quantity_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/product_price_field"
+            android:paddingBottom="5dip"
+            android:paddingTop="10dip"
+            android:text="@string/product_quantity_text" />
+
+        <EditText
+            android:id="@+id/product_quantity_field"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/product_quantity_text"
+            android:hint="@string/product_quantity_hint"
+            android:inputType="number"
+            android:maxLength="15"
+            android:singleLine="true" />
+
+        <TextView
+            android:id="@+id/product_category_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/product_quantity_field"
+            android:paddingBottom="5dip"
+            android:paddingTop="10dip"
+            android:text="@string/product_category_text" />
+
+        <Spinner
+            android:id="@+id/product_category_spinner"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/product_category_text"
+            android:prompt="@string/product_select_category"
+            android:text="@string/product_category_text" />
+
+        <Button
+            android:id="@+id/product_add_btn"
+            android:layout_width="200dip"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/product_category_spinner"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dip"
+            android:text="@string/save_text" />
+    </RelativeLayout>
+
+</ScrollView>

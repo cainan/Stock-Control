@@ -11,7 +11,7 @@ public class Product implements Serializable {
 
     private int mIdProduct;
     private String mProductName;
-    private float mPrice;
+    private String mPrice;
     private int mQuantity;
     private Category mCategory;
 
@@ -31,11 +31,11 @@ public class Product implements Serializable {
         this.mProductName = productName;
     }
 
-    public float getPrice() {
+    public String getPrice() {
         return mPrice;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(String price) {
         this.mPrice = price;
     }
 

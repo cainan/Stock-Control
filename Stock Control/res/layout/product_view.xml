@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <Button
-        android:id="@+id/add_category_btn"
+        android:id="@+id/add_product_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -13,11 +13,11 @@
         android:text="Add" />
 
     <ListView
-        android:id="@+id/category_list"
+        android:id="@+id/product_list"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/order_by_area"
-        android:layout_below="@id/add_category_btn"
+        android:layout_below="@id/add_product_btn"
         android:visibility="gone" />
 
     <TextView
@@ -25,9 +25,9 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@+id/order_by_area"
-        android:layout_below="@id/add_category_btn"
+        android:layout_below="@id/add_product_btn"
         android:gravity="center"
-        android:text="@string/category_empty"
+        android:text="@string/product_empty"
         android:textSize="21sp" />
 
     <RelativeLayout

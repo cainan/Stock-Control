@@ -10,7 +10,7 @@
     <string name="category_name_hint">Category name</string>
     <string name="category_options">What do you want to do?</string>
     <string name="category_name_invalid">Invalid category name</string>
-    <string name="category_empty">No categories found.</string>
+    <string name="category_empty">No categories found</string>
     
     
     <string name="ok_text">Ok</string>

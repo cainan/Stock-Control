@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import br.csoliveira.stockcontrol.R;
 import br.csoliveira.stockcontrol.model.Category;
-import br.csoliveira.stockcontrol.util.Utils;
 
 public class CategoryListAdapter extends BaseAdapter {
 

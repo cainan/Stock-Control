@@ -201,8 +201,8 @@ public class DatabaseDelegate {
      * @param orderBy
      */
     public synchronized void listProduct(Activity activity, String orderBy) {
-        // String sqlOrderBy = generateOrderByCategory(activity, orderBy);
-        // new ListCategory(activity).execute(sqlOrderBy);
+        String sqlOrderBy = generateOrderByCategory(activity, orderBy);
+        new ListProduct(activity).execute(sqlOrderBy);
     }
 
     /**
@@ -237,7 +237,7 @@ public class DatabaseDelegate {
      */
     private ContentValues categoryContentValues(Category category) {
         ContentValues cv = new ContentValues();
-        cv.put("category", category.getCategory());
+        cv.put("category", category.getCategoryName());
         return cv;
     }
 
@@ -377,7 +377,7 @@ public class DatabaseDelegate {
                 for (int i = 0; i < cursor.getCount(); i++) {
                     category = new Category();
                     category.setIdCategory(cursor.getInt(0));
-                    category.setCategory(cursor.getString(1));
+                    category.setCategoryName(cursor.getString(1));
 
                     categoryArray.add(category);
                     cursor.moveToNext();
@@ -548,11 +548,11 @@ public class DatabaseDelegate {
      * @version 1.0
      * @created 29/03/2012
      */
-    private class ListProducts extends AsyncTask<String, Void, ArrayList<Product>> {
+    private class ListProduct extends AsyncTask<String, Void, ArrayList<Product>> {
 
         private Activity mActivity;
 
-        public ListProducts(Activity activity) {
+        public ListProduct(Activity activity) {
             mActivity = activity;
         }
 
@@ -565,7 +565,7 @@ public class DatabaseDelegate {
         @Override
         protected ArrayList<Product> doInBackground(String... params) {
             String orderBy = params[0];
-            ArrayList<Product> categoryArray = new ArrayList<Product>();
+            ArrayList<Product> productArray = new ArrayList<Product>();
             Product product;
 
             String[] allColumns = { "_id", "idCategoria", "product", "price", "quantity" };
@@ -586,21 +586,21 @@ public class DatabaseDelegate {
                     product.setPrice(cursor.getString(3));
                     product.setQuantity(cursor.getInt(4));
 
-                    categoryArray.add(product);
+                    productArray.add(product);
                     cursor.moveToNext();
                 }
             }
 
             closeDb();
 
-            return categoryArray;
+            return productArray;
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Product> categoryArray) {
+        protected void onPostExecute(ArrayList<Product> productArray) {
             hideWaitDialog(mActivity);
-            notifyActivity((DatabaseInterface) mActivity, true, categoryArray);
-            super.onPostExecute(categoryArray);
+            notifyActivity((DatabaseInterface) mActivity, true, productArray);
+            super.onPostExecute(productArray);
         }
 
     }

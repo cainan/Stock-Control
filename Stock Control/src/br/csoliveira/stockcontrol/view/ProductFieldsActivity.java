@@ -87,7 +87,7 @@ public class ProductFieldsActivity extends Activity implements DatabaseInterface
         String[] arrayString = new String[mCategoryArray.size()];
 
         for (int i = 0; i < mCategoryArray.size(); i++) {
-            arrayString[i] = mCategoryArray.get(i).getCategory();
+            arrayString[i] = mCategoryArray.get(i).getCategoryName();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,

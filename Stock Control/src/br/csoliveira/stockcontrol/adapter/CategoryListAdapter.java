@@ -48,7 +48,7 @@ public class CategoryListAdapter extends BaseAdapter {
         convertView = View.inflate(mContext, R.layout.category_item, null);
         TextView categoryName = (TextView) convertView.findViewById(R.id.category_name);
         if (categoryName != null) {
-            categoryName.setText(mCategory.get(position).getCategory());
+            categoryName.setText(mCategory.get(position).getCategoryName());
         }
         return convertView;
     }

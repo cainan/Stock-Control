@@ -233,7 +233,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
             final View textField = factory.inflate(R.layout.add_category_layout, null);
             final EditText editText = (EditText) textField.findViewById(R.id.category_name_field);
             if (editText != null) {
-                editText.setText(mSelectedCategory.getCategory());
+                editText.setText(mSelectedCategory.getCategoryName());
             }
             builder.setView(textField);
 
@@ -305,7 +305,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
      */
     private void insertCategory(String categoryName) {
         Category category = new Category();
-        category.setCategory(categoryName);
+        category.setCategoryName(categoryName);
         mDatabaseDelegate.insertCategory(this, category);
     }
 
@@ -316,7 +316,7 @@ public class CategoryActivity extends Activity implements DatabaseInterface {
      */
     private void editCategory(String categoryName) {
         Category category = new Category();
-        category.setCategory(categoryName);
+        category.setCategoryName(categoryName);
         category.setIdCategory(mSelectedCategory.getIdCategory());
         mDatabaseDelegate.editCategory(this, category);
     }

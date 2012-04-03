@@ -13,7 +13,7 @@ public class Product implements Serializable {
     private String mProductName;
     private String mPrice;
     private int mQuantity;
-    private Category mCategory;
+    private Category mCategory = new Category();
 
     public int getIdProduct() {
         return mIdProduct;

@@ -10,7 +10,7 @@ public class Category implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private int mIdCategory;
-    private String mCategory;
+    private String mCategoryName;
 
     public void setIdCategory(int idCategory) {
         this.mIdCategory = idCategory;
@@ -20,12 +20,12 @@ public class Category implements Serializable {
         return mIdCategory;
     }
 
-    public void setCategory(String category) {
-        this.mCategory = category;
+    public void setCategoryName(String categoryName) {
+        this.mCategoryName = categoryName;
     }
 
-    public String getCategory() {
-        return mCategory;
+    public String getCategoryName() {
+        return mCategoryName;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class Category implements Serializable {
         Category category = (Category) obj;
 
         if (category.getIdCategory() == this.getIdCategory()
-                && category.getCategory().equals(this.getCategory())) {
+                && category.getCategoryName().equals(this.getCategoryName())) {
             return true;
         }
 

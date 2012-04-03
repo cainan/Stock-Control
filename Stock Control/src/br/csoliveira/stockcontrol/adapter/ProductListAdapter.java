@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import br.csoliveira.stockcontrol.R;
 import br.csoliveira.stockcontrol.model.Product;
+import br.csoliveira.stockcontrol.util.Utils;
 
 public class ProductListAdapter extends BaseAdapter {
 
@@ -47,8 +48,9 @@ public class ProductListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = View.inflate(mContext, R.layout.product_item, null);
         TextView productName = (TextView) convertView.findViewById(R.id.product_name);
+        Utils.doLog("the name is: " + mProduct.get(0).getProductName());
         if (productName != null) {
-            productName.setText(mProduct.get(position).getCategory().getCategory());
+            productName.setText(mProduct.get(0).getProductName());
         }
         return convertView;
     }
@@ -57,6 +59,8 @@ public class ProductListAdapter extends BaseAdapter {
         if (mProduct != null) {
             mProduct.clear();
         }
+        Utils.doLog("qtd: " + mProduct.size());
+        
         mProduct = productArray;
         notifyDataSetChanged();
     }

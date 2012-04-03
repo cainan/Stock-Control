@@ -19,6 +19,7 @@ import br.csoliveira.stockcontrol.adapter.ProductListAdapter;
 import br.csoliveira.stockcontrol.model.Product;
 import br.csoliveira.stockcontrol.model.database.DatabaseDelegate;
 import br.csoliveira.stockcontrol.model.database.DatabaseInterface;
+import br.csoliveira.stockcontrol.util.Utils;
 
 public class ProductActivity extends Activity implements DatabaseInterface {
 
@@ -56,7 +57,7 @@ public class ProductActivity extends Activity implements DatabaseInterface {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.product_view);
 
-        mDatabaseDelegate = DatabaseDelegate.getInstance(getApplicationContext());
+        mDatabaseDelegate = DatabaseDelegate.getInstance(this);
         mProductAdapter = new ProductListAdapter(this);
 
         initView();
@@ -149,6 +150,7 @@ public class ProductActivity extends Activity implements DatabaseInterface {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onSuccess(Object obj) {
         if (obj instanceof ArrayList<?>) {

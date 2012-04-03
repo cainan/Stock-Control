@@ -178,10 +178,10 @@ public class DatabaseDelegate {
      * Call asyncTask to remove a product
      * 
      * @param activity
-     * @param idCategory
+     * @param idProduct
      */
-    public void removeProduct(Activity activity, int idCategory) {
-        // new RemoveCategory(activity).execute(idCategory);
+    public void removeProduct(Activity activity, int idProduct) {
+        new RemoveProduct(activity).execute(idProduct);
     }
 
     /**
@@ -603,6 +603,53 @@ public class DatabaseDelegate {
             super.onPostExecute(productArray);
         }
 
+    }
+
+    /**
+     * Remove a product from database
+     * 
+     * @author vntcaol
+     * @version 1.0
+     * @created 29/03/2012
+     */
+    private class RemoveProduct extends AsyncTask<Integer, Void, Boolean> {
+
+        private Activity mActivity;
+
+        public RemoveProduct(Activity activity) {
+            mActivity = activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            showWaitDialog(mActivity);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+
+            int id = params[0];
+            boolean success = false;
+            // Open Database
+            mDataBase = mDatabaseHelper.getWritableDatabase();
+
+            if (mDataBase.delete(TABLE_PRODUCT, "_id =" + id, null) > 0) {
+                success = true;
+            }
+
+            // Close database
+            closeDb();
+
+            return success;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success) {
+            hideWaitDialog(mActivity);
+            notifyActivity((DatabaseInterface) mActivity, success);
+            super.onPostExecute(success);
+        }
     }
 
     /**

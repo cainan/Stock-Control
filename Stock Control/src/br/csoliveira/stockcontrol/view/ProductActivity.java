@@ -3,6 +3,9 @@ package br.csoliveira.stockcontrol.view;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,13 +22,15 @@ import br.csoliveira.stockcontrol.adapter.ProductListAdapter;
 import br.csoliveira.stockcontrol.model.Product;
 import br.csoliveira.stockcontrol.model.database.DatabaseDelegate;
 import br.csoliveira.stockcontrol.model.database.DatabaseInterface;
-import br.csoliveira.stockcontrol.util.Utils;
 
 public class ProductActivity extends Activity implements DatabaseInterface {
 
     /** Request code to add new product */
     private static final int REQUEST_CODE_ADD = 10;
     private static final int REQUEST_CODE_EDIT = 11;
+
+    /** Dialog id's */
+    private static final int DIALOG_OPTIONS_CATEGORY = 11;
 
     /** Hold the add product button */
     private Button mAddBtn;
@@ -88,7 +93,7 @@ public class ProductActivity extends Activity implements DatabaseInterface {
                 public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
                     mSelectedProduct = (Product) mProductAdapter.getItem(position);
                     if (mSelectedProduct != null) {
-                        // showDialog(DIALOG_OPTIONS_CATEGORY);
+                        showDialog(DIALOG_OPTIONS_CATEGORY);
                     }
                 }
 
@@ -145,9 +150,47 @@ public class ProductActivity extends Activity implements DatabaseInterface {
     }
 
     @Override
-    public void onSuccess() {
-        // TODO Auto-generated method stub
+    protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.app_name);
 
+        if (id == DIALOG_OPTIONS_CATEGORY) {
+            builder.setMessage(getString(R.string.category_options));
+
+            builder.setPositiveButton(R.string.edit_text, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeDialog(DIALOG_OPTIONS_CATEGORY);
+                    // showDialog(DIALOG_EDIT_CATEGORY);
+                }
+            });
+
+            builder.setNegativeButton(R.string.remove_text, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeDialog(DIALOG_OPTIONS_CATEGORY);
+                    removeProduct();
+                }
+            });
+            Dialog dialog = builder.create();
+            return dialog;
+        }
+
+        return null;
+    }
+
+    /**
+     * Call database to remove a category
+     */
+    private void removeProduct() {
+        mDatabaseDelegate.removeProduct(this, mSelectedProduct.getIdProduct());
+    }
+
+    @Override
+    public void onSuccess() {
+        listProduct(mOrderBy);
     }
 
     @SuppressWarnings("unchecked")

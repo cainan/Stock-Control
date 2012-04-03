@@ -48,9 +48,8 @@ public class ProductListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         convertView = View.inflate(mContext, R.layout.product_item, null);
         TextView productName = (TextView) convertView.findViewById(R.id.product_name);
-        Utils.doLog("the name is: " + mProduct.get(0).getProductName());
         if (productName != null) {
-            productName.setText(mProduct.get(0).getProductName());
+            productName.setText(mProduct.get(position).getProductName());
         }
         return convertView;
     }
@@ -60,7 +59,7 @@ public class ProductListAdapter extends BaseAdapter {
             mProduct.clear();
         }
         Utils.doLog("qtd: " + mProduct.size());
-        
+
         mProduct = productArray;
         notifyDataSetChanged();
     }

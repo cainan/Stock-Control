@@ -58,6 +58,7 @@ public class ProductFieldsActivity extends Activity implements DatabaseInterface
         initView();
 
         initCategoriesAvailable();
+
     }
 
     private void initView() {
@@ -161,6 +162,7 @@ public class ProductFieldsActivity extends Activity implements DatabaseInterface
     @Override
     public void onSuccess() {
         Toast.makeText(this, getString(R.string.success_text), Toast.LENGTH_SHORT).show();
+        setResult(Activity.RESULT_OK);
         finish();
     }
 

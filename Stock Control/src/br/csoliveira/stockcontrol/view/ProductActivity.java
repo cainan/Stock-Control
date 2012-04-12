@@ -31,6 +31,7 @@ public class ProductActivity extends Activity implements DatabaseInterface {
 
     /** Dialog id's */
     private static final int DIALOG_OPTIONS_CATEGORY = 11;
+    private static final int DIALOG_ERROR_CATEGORY = 14;
 
     /** Hold the add product button */
     private Button mAddBtn;
@@ -141,11 +142,13 @@ public class ProductActivity extends Activity implements DatabaseInterface {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            listProduct(mOrderBy);
+        }
     }
 
-    protected void listProduct(String mOrderBy2) {
+    protected void listProduct(String orderBy) {
         mDatabaseDelegate.listProduct(this, null);
     }
 
@@ -162,7 +165,8 @@ public class ProductActivity extends Activity implements DatabaseInterface {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     removeDialog(DIALOG_OPTIONS_CATEGORY);
-                    // showDialog(DIALOG_EDIT_CATEGORY);
+                    Intent intent = new Intent(ProductActivity.this, ProductFieldsActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE_EDIT);
                 }
             });
 
@@ -174,6 +178,20 @@ public class ProductActivity extends Activity implements DatabaseInterface {
                     removeProduct();
                 }
             });
+            Dialog dialog = builder.create();
+            return dialog;
+
+        } else if (id == DIALOG_ERROR_CATEGORY) {
+            builder.setMessage(getString(R.string.error_text));
+
+            builder.setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    removeDialog(DIALOG_ERROR_CATEGORY);
+                }
+            });
+
             Dialog dialog = builder.create();
             return dialog;
         }
@@ -205,8 +223,7 @@ public class ProductActivity extends Activity implements DatabaseInterface {
 
     @Override
     public void onError() {
-        // TODO Auto-generated method stub
-
+        showDialog(DIALOG_ERROR_CATEGORY);
     }
 
 }

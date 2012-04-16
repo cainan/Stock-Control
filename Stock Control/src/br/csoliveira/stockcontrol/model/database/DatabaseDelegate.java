@@ -40,8 +40,10 @@ public class DatabaseDelegate {
 
     /** Hold the script to create product table */
     private static final String CREATE_TABLE_PRODUCT = "create table " + TABLE_PRODUCT
-            + "( _id integer primary key autoincrement," + "idCategoria integer not null,"
-            + "product text not null," + "price text not null," + "quantity text not null" + ");";
+            + "( _id integer primary key autoincrement," + "idCategory int not null,"
+            + "product text not null," + "price text not null," + "quantity text not null,"
+            + "FOREIGN KEY(" + "idCategory" + ") REFERENCES " + TABLE_CATEGORY + "(" + " _id "
+            + "));";
 
     /** Hold an instance of SQLiteHelper */
     private SQLiteHelper mDatabaseHelper;
@@ -223,7 +225,7 @@ public class DatabaseDelegate {
     private ContentValues productContentValues(Product product) {
         ContentValues cv = new ContentValues();
         cv.put("product", product.getProductName());
-        cv.put("idCategoria", product.getCategory().getIdCategory());
+        cv.put("idCategory", product.getCategory().getIdCategory());
         cv.put("price", product.getPrice());
         cv.put("quantity", product.getQuantity());
         return cv;
@@ -568,7 +570,7 @@ public class DatabaseDelegate {
             ArrayList<Product> productArray = new ArrayList<Product>();
             Product product;
 
-            String[] allColumns = { "_id", "idCategoria", "product", "price", "quantity" };
+            String[] allColumns = { "_id", "idCategory", "product", "price", "quantity" };
 
             mDataBase = mDatabaseHelper.getWritableDatabase();
 
